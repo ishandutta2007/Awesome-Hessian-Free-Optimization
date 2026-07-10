@@ -116,3 +116,14 @@ To assist with your repository documentation setup, let me know how you would li
 * I can generate a **Markdown matrix table** tracking the explicit damping constants ($\lambda$), inner truncation horizons, and target layers utilized by leading repositories to optimize low-rank parameter spaces [INDEX: 11, 22].
 * I can write a detailed technical explanation focusing on the **mathematical proof of Pearlmutter's R-operator derivation** and how directional derivatives eliminate the requirement for second-order matrix instantiation.
 
+
+##  Star History
+<div align="center">
+<a href="https://www.star-history.com/?repos=ishandutta2007%2FAwesome-Hessian-Free-Optimization&type=date&legend=bottom-right">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=ishandutta2007/Awesome-Hessian-Free-Optimization&type=date&theme=dark&legend=bottom-right" />
+<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=ishandutta2007/Awesome-Hessian-Free-Optimization&type=date&legend=bottom-right" />
+<img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ishandutta2007/Awesome-Hessian-Free-Optimization&type=date&legend=bottom-right" />
+</picture>
+</a>
+</div>
