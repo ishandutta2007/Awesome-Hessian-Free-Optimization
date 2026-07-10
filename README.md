@@ -1,4 +1,6 @@
-# Awesome-Hessian-Free-Optimization
+# 🚀 Awesome-Hessian-Free-Optimization 🌟
+
+![Banner](assets/banner.svg)
 ## Hessian-Free Optimization in AI: History, Progression, Variants, & Applications
 
 **Hessian-Free (HF) Optimization**—alternatively known as truncated Newton optimization or Newton-CG—is an advanced second-order mathematical optimization paradigm designed to train high-capacity deep neural networks [INDEX: 16]. Standard first-order optimization algorithms, such as Stochastic Gradient Descent (SGD) or Adam, update model parameters ($W$) using only the first derivative (gradient) of the loss function, which tracks the steepest downward direction. While computationally cheap, first-order methods suffer from path oscillation and slow convergence when traversing non-convex, highly irregular error landscapes characterized by pathological curvature (such as narrow, steep ravines or flat saddle zones). 
@@ -7,7 +9,7 @@ Classical second-order methods (Newton's method) resolve this by calculating the
 
 ---
 
-## 1. The Macro Chronological Evolution
+## 🕰️ 1. The Macro Chronological Evolution
 
 The technical framework governing curvature-aware optimization has transitioned from flat gradient steps to exact matrix inversions, implicit vector products, and modern low-rank parameter-efficient alignment adapters.
 
@@ -29,7 +31,7 @@ flowchart LR
 
 ---
 
-## 2. Core Functional & Algorithmic Components
+## ⚙️ 2. Core Functional & Algorithmic Components
 
 Hessian-Free optimization is strictly structured around three interconnected mathematical blocks that coordinate the curvature mapping sequence.
 
@@ -41,7 +43,7 @@ Hessian-Free optimization is strictly structured around three interconnected mat
 
 ---
 
-## 3. The Hessian-Free Optimization Inversion Matrix
+## 🧮 3. The Hessian-Free Optimization Inversion Matrix
 
 To compute second-order curvature trajectories smoothly without triggering hardware stalls, the optimization architecture coordinates an interleaved dual-loop backpropagation pipeline.
 
@@ -64,7 +66,7 @@ flowchart TB
 
 ---
 
-## 4. Production Engineering Challenges & Cluster Solutions
+## 🏗️ 4. Production Engineering Challenges & Cluster Solutions
 
 Deploying implicit second-order optimization loops across massive multi-node distributed training infrastructures introduces critical communication and synchronization bottlenecks [INDEX: 22].
 
@@ -75,7 +77,7 @@ Deploying implicit second-order optimization loops across massive multi-node dis
 
 ---
 
-## 5. Frontier Real-World AI Industrial Applications
+## 🌐 5. Frontier Real-World AI Industrial Applications
 
 | Application | Year | Paper | Details |
 |---|---|---|---|
