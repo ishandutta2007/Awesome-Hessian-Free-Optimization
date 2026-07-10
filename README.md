@@ -1,6 +1,11 @@
 # 🚀 Awesome-Hessian-Free-Optimization 🌟
 
 ![Banner](assets/banner.svg)
+
+<div align="center">
+<a href="https://github.com/ishandutta2007/Awesome-Awesome-Awesome"><img src="https://img.shields.io/badge/Awesome-%E2%9C%94-blueviolet?style=flat-square&logo=github" alt="Awesome"/></a><a href="https://discord.gg/jc4xtF58Ve"><img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
+</div>
+
 ## Hessian-Free Optimization in AI: History, Progression, Variants, & Applications
 
 **Hessian-Free (HF) Optimization**—alternatively known as truncated Newton optimization or Newton-CG—is an advanced second-order mathematical optimization paradigm designed to train high-capacity deep neural networks [INDEX: 16]. Standard first-order optimization algorithms, such as Stochastic Gradient Descent (SGD) or Adam, update model parameters ($W$) using only the first derivative (gradient) of the loss function, which tracks the steepest downward direction. While computationally cheap, first-order methods suffer from path oscillation and slow convergence when traversing non-convex, highly irregular error landscapes characterized by pathological curvature (such as narrow, steep ravines or flat saddle zones). 
