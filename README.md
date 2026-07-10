@@ -20,17 +20,12 @@ flowchart LR
 ```
 
 
-*   **The First-Order Gradient Descent Baseline Era (Traditional ML, Pre-2010)**
-    *   *Concept:* The core optimization baseline. Deep networks updated weights by evaluating the first derivative vector. Algorithms tracking parameters linearly struggled when encountering severe non-convex landscapes, leading to optimization stalls or requiring extensive learning rate schedules.
-*   **The Exact Newton Processing Bottleneck (Classical Multi-Variate Calculus)**
-    *   *Concept:* The theoretical optimization ideal. Newton's method calculates the exact curvature of the local loss surface, executing optimization jumps straight to the local minimum by inverting the full Hessian matrix ($\Delta W = -H^{-1}\nabla W$).
-    *   *Limitation:* Catastrophic $O(N^3)$ processing chokes. The physical requirement to allocate and compute billions of second-order coefficients simultaneously creates an impenetrable memory wall, blocking execution over multi-layer networks.
-*   **The Implicit Vector-Product Revolution (Hessian-Free Framework, Martens, 2010–2012)**
-    *   *Concept:* James Martens (2010) formalized Hessian-Free optimization for deep neural networks, proving that second-order curvature updates could run without physically instantiating the Hessian matrix. Instead of solving $H^{-1}\nabla W$ explicitly, the framework combines **Pearlmutter's implicit $R$-operator calculus loop** with an inner iterative **Conjugate Gradient (CG) solver**, computing the exact Hessian-vector product ($Hv$) dynamically using standard auto-differentiation passes.
-    *   *Significance:* Slashed the mathematical time complexity of second-order optimization down to linear $O(N)$ scaling bounds per CG step, enabling deep architectures (such as early deep CNNs and RNNs) to train stably without experiencing gradient vanishing or exploding loops.
-*   **The Subspace & Low-Rank Second-Order Era (~2020–Present)**
-    *   *Concept:* The current modern state-of-the-art post-training standard. Training massive multi-billion parameter foundation architectures from scratch using pure Hessian-Free loops remains challenging due to the high volume of inner CG steps required per epoch [INDEX: 15]. Modern production architectures bridge the gap by isolating second-order curvature tracking inside tiny parameter subspaces.
-    *   *Significance:* Frameworks deploy Kronecker-factored approximate curvature methods (K-FAC) or run Hessian-Free second-order subroutines strictly over low-rank adapters (**LoRA / QLoRA weight matrices**) or **Sparse Autoencoder hidden enclaves** [INDEX: 2, 11]. This captures local curvature geometries precisely to guide preference alignment (DPO) loops safely without parameter fragmentation [INDEX: 11].
+| Concept | Year | Paper | Details |
+|---|---|---|---|
+| The First-Order Gradient Descent Baseline Era | 1951 | [Robbins & Monro (1951)](https://doi.org/10.1214/aoms/1177729586) | [Link](details_first_order_gradient.md) |
+| The Exact Newton Processing Bottleneck | 1671 | [Newton's Method](https://en.wikipedia.org/wiki/Newton%27s_method) | [Link](details_newton_processing.md) |
+| The Implicit Vector-Product Revolution | 2010 | [Martens, 2010](https://icml.cc/2010/papers/458.pdf) | [Link](details_implicit_vector.md) |
+| The Subspace & Low-Rank Second-Order Era | 2020 | [Hu et al., 2021](https://arxiv.org/abs/2106.09685) | [Link](details_low_rank.md) |
 
 ---
 
@@ -38,17 +33,11 @@ flowchart LR
 
 Hessian-Free optimization is strictly structured around three interconnected mathematical blocks that coordinate the curvature mapping sequence.
 
-- ### A. The Pearlmutter Trick (Implicit $R$-Operator Calculus)
-	*   **Mechanism:** Evaluates the product of a Hessian matrix and an arbitrary vector $v$ analytically without generating the Hessian. It defines a differential operator $R_v\{f(w)\} = \left. \frac{d}{d\epsilon} f(w + \epsilon v) \right|_{\epsilon=0}$. By applying this operator straight to the model's standard gradient extraction backpropagation pass, the system computes the exact product vector ($Hv$) directly within a single forward-backward pass iteration:
-	    $$Hv = \nabla_w \left( \nabla_w J(w)^T \cdot v \right)$$
-	*   **Pros:** Compresses the space complexity of second-order derivatives to an absolute linear footprint matching standard backpropagation.
-
-- ### B. The Inner Conjugate Gradient (CG) Loop
-	*   **Mechanism:** Replaces explicit matrix inversion operations with an iterative linear solver. At each macro optimization step, the CG algorithm unrolls an internal loop, minimizing the quadratic sub-problem $q(d) = \frac{1}{2} d^T H d + \nabla J^T d$ by sequentially computing direction vectors using the implicit $Hv$ products.
-	*   **Condition:** Bounded by an automated **Truncation Criterion**, halting the inner loop early as soon as the descent trajectory plateaus to protect computing bandwidth.
-
-- ### C. The Damped Gauss-Newton Approximation (GNDA)
-	*   **Mechanism:** Resolves the problem of non-positive definite Hessian matrices typical of highly non-convex deep learning loss landscapes (where raw negative eigenvalues cause standard Newton methods to jump toward local maxima). It replaces the true Hessian with the **Gauss-Newton Matrix ($G$)** or Fisher Information Matrix, adding a dynamic damping scalar ($\lambda \cdot I$) to ensure the system remains strictly positive-definite.
+| Component | Year | Paper | Details |
+|---|---|---|---|
+| A. The Pearlmutter Trick (Implicit $R$-Operator Calculus) | 1994 | [Pearlmutter, 1994](https://direct.mit.edu/neco/article/6/1/147/6078) | [Link](details_pearlmutter.md) |
+| B. The Inner Conjugate Gradient (CG) Loop | 1952 | [Hestenes & Stiefel, 1952](https://nvlpubs.nist.gov/nistpubs/jres/049/jresv49n6p409_A1b.pdf) | [Link](details_cg_loop.md) |
+| C. The Damped Gauss-Newton Approximation (GNDA) | 1944 | [Levenberg, 1944](https://www.jstor.org/stable/43633451) | [Link](details_gnda.md) |
 
 ---
 
@@ -68,10 +57,10 @@ flowchart TB
 ```
 
 
-*   **The Outer Loop / Inner Loop Split**
-    *   *Profile:* Coordinates the calculation layers. The *Outer Loop* handles the standard training dataset ingestion, computing the initial first-order gradient vector ($\nabla J$). The *Inner Loop* freezes the data batch, executing iterative CG adjustments to isolate the final optimal curvature direction vector ($d$).
-*   **Damping Scaling Schedulers ($\lambda$)**
-    *   *Profile:* Keeps optimization paths stable. Adapting principles from Levenberg-Marquardt algorithms, the damping coefficient ($\lambda$) scales up dynamically if the inner loop steps fail to lower the objective model loss, and cools down smoothly as convergence accelerates.
+| Component | Year | Paper | Details |
+|---|---|---|---|
+| The Outer Loop / Inner Loop Split | 2010 | [Martens, 2010](https://icml.cc/2010/papers/458.pdf) | [Link](details_outer_inner.md) |
+| Damping Scaling Schedulers ($\lambda$) | 1963 | [Marquardt, 1963](https://epubs.siam.org/doi/10.1137/0111030) | [Link](details_damping.md) |
 
 ---
 
@@ -79,23 +68,20 @@ flowchart TB
 
 Deploying implicit second-order optimization loops across massive multi-node distributed training infrastructures introduces critical communication and synchronization bottlenecks [INDEX: 22].
 
-*   **The Inner-Loop Sequential Communication Interconnect Barrier**
-    *   *The Problem:* The Conjugate Gradient algorithm requires a hard synchronization checkpoint at the end of *every individual inner step*: all sharded nodes must aggregate and share their partial vector dot products globally via collective primitives (`All-Reduce`) before the next search direction can be computed [INDEX: 22]. For massive multi-node setups, this introduces extreme communication network latency, stalling GPU Tensor Cores [INDEX: 22].
-    *   *Mitigation:* Implementing **Subspace Preconditioning or Block-Diagonal Hessian-Free approximations**, restricting second-order optimization loops to execute strictly within independent local GPU server nodes asynchronously, bypassing global cluster wide barrier synchronization.
-*   **The Low-Precision Mixed-Bits Underflow Hazard**
-    *   *The Problem:* When executing implicit numerical differentiation steps ($\epsilon \rightarrow 10^{-6}$) inside models that train under low-precision 16-bit floats (FP16 or BF16) [INDEX: 11], multiplying small vector directions by tiny learning parameters can trigger **Underflow Errors**, zeroing out curvature updates completely [INDEX: 11, 16].
-    *   *Mitigation:* Maintaining the master weight tensors and CG direction buffers strictly within high-precision 32-bit floating-point registers (FP32) [INDEX: 11], executing the low-rank delta updates down to low-precision formats dynamically only during forward execution matrix loops.
+| Challenge | Year | Paper | Details |
+|---|---|---|---|
+| The Inner-Loop Sequential Communication Interconnect Barrier | 2010 | [Martens, 2010](https://icml.cc/2010/papers/458.pdf) | [Link](details_comm_barrier.md) |
+| The Low-Precision Mixed-Bits Underflow Hazard | 2017 | [Micikevicius et al., 2017](https://arxiv.org/abs/1710.03740) | [Link](details_mixed_precision.md) |
 
 ---
 
 ## 5. Frontier Real-World AI Industrial Applications
 
-*   **Post-Training Low-Rank Alignment Optimization for Foundational LLMs**
-    *   *Application:* Stabilizes preference fine-tuning loops for advanced conversational architectures [INDEX: 11]. By applying Hessian-Free second-order subspace optimization over low-rank adapters (LoRA layers), post-training networks navigate steep curvature cliffs and saddle points safely, allowing models to internalize complex formatting guidelines and behavioral alignment parameters with high convergence stability [INDEX: 11].
-*   **Unsupervised Latent Space Interpretability Mapping (SAE Auditing)**
-    *   *Application:* Decodes the deep feature representation networks of foundation architectures [INDEX: 2]. Curvature-aware Hessian-Free tracking matrices evaluate the sensitivity profiles of hidden layer nodes wrapped within overcomplete Sparse Autoencoders, helping interpretability teams isolate and verify true causal reasoning pipelines precisely [INDEX: 2].
-*   **High-Fidelity Medical Diagnostic Imaging Calibration Backbones**
-    *   *Application:* Optimizes computer vision systems processing massive, high-dimensional multi-megapixel clinical matrices (such as 3D CT volumes and high-res pathology slides) [INDEX: 1]. Hessian-Free subroutines compute robust, curvature-aware parameter steps over deep convolutional layers, ensuring feature-extraction paths calibrate symmetrically without experiencing optimization divergence under highly sparse data regimes [INDEX: 1].
+| Application | Year | Paper | Details |
+|---|---|---|---|
+| Post-Training Low-Rank Alignment Optimization for Foundational LLMs | 2021 | [Hu et al., 2021](https://arxiv.org/abs/2106.09685) | [Link](details_post_train.md) |
+| Unsupervised Latent Space Interpretability Mapping (SAE Auditing) | 2023 | [Bricken et al., 2023](https://transformer-circuits.pub/2023/monosemantic-features/index.html) | [Link](details_sae.md) |
+| High-Fidelity Medical Diagnostic Imaging Calibration Backbones | 2010 | [Martens, 2010](https://icml.cc/2010/papers/458.pdf) | [Link](details_medical.md) |
 
 ---
 
