@@ -15,7 +15,8 @@ The technical framework governing curvature-aware optimization has transitioned 
 
 
 ```mermaid
-[First-Order Gradients (SGD, 1951)] ───> [Exact Newton Optimization] ───> [Hessian-Free Paradigm (Martens, 2010)] ───> [Subspace / Low-Rank Second Order](Pathological Curvature Stalls)          (Catastrophic O(N³) Processing Chokes)         (Implicit Vector-Product Calculus Loops)       (Fused Parameter-Efficient Adapters)
+flowchart LR
+    A["First-Order Gradients (SGD, 1951)<br>(Pathological Curvature Stalls)"] --> B["Exact Newton Optimization<br>(Catastrophic O(N³) Processing Chokes)"] --> C["Hessian-Free Paradigm (Martens, 2010)<br>(Implicit Vector-Product Calculus Loops)"] --> D["Subspace / Low-Rank Second Order<br>(Fused Parameter-Efficient Adapters)"]
 ```
 
 
@@ -59,8 +60,11 @@ To compute second-order curvature trajectories smoothly without triggering hardw
 
 
 ```mermaid
-The Hessian-Free Dual-Loop Pipeline┌───────────────────┐│ Outer Loop Epoch  │└─────────┬─────────┘│ (Calculate First-Order Gradient ∇J)▼┌───────────────────┐│  Inner CG Loop    │ <───┐└─────────┬─────────┘     │ (Iterate to Solve Hd = -∇J)│               │▼               │[Compute Implicit Hv Product] ───┘│▼ (Truncation Threshold Met)Execute Adaptive 
-Parameter Step
+flowchart TB
+    A["Outer Loop Epoch"] -- "(Calculate First-Order Gradient ∇J)" --> B["Inner CG Loop"]
+    B --> C["Compute Implicit Hv Product"]
+    C -- "(Iterate to Solve Hd = -∇J)" --> B
+    C -- "(Truncation Threshold Met)" --> D["Execute Adaptive<br>Parameter Step"]
 ```
 
 
